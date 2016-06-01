@@ -64,6 +64,15 @@
 			</div>
 		</div>
 		<div class="control-group types typeWebsite">
+			<label class="control-label" for="detectchange">{{ label_detectchange }}</label>
+			<div class="controls">
+                                <select id="detectchange" name="detectchange" data-toggle="tooltip" title="{{ label_detectchange_description }}" >
+					<option value="yes" {{ edit_detectchange_selected_yes|raw }}>{{ label_yes }}</option>
+					<option value="no" {{ edit_detectchange_selected_no|raw }}>{{ label_no }}</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group types typeWebsite">
 			<label class="control-label" for="warning_threshold">{{ label_warning_threshold }}</label>
 			<div class="controls">
 				<input class="input-mini" type="text" id="warning_threshold" name="warning_threshold" value="{{ edit_value_warning_threshold }}" maxlength="5" data-toggle="tooltip" title="{{ label_warning_threshold_description }}" />

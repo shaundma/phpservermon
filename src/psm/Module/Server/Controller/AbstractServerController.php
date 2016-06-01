@@ -64,6 +64,8 @@ abstract class AbstractServerController extends AbstractController {
 					`s`.`type`,
 					`s`.`label`,
 					`s`.`pattern`,
+					`s`.`detectchange`,
+					`s`.`hash`,
 					`s`.`status`,
 					`s`.`error`,
 					`s`.`rtime`,
@@ -100,6 +102,7 @@ abstract class AbstractServerController extends AbstractController {
 		$server['rtime'] = round((float) $server['rtime'], 4);
 		$server['last_online']  = psm_timespan($server['last_online']);
 		$server['last_check']  = psm_timespan($server['last_check']);
+		$server['detectchange'] = psm_get_lang('system', $server['detectchange']);
 		$server['active'] = psm_get_lang('system', $server['active']);
 		$server['email'] = psm_get_lang('system', $server['email']);
 		$server['sms'] = psm_get_lang('system', $server['sms']);

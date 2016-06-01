@@ -126,7 +126,7 @@ class Installer {
 
 		$this->log('Populating database...');
 		$queries = array();
-		$queries[] = "INSERT INTO `" . PSM_DB_PREFIX . "servers` (`ip`, `port`, `label`, `type`, `pattern`, `status`, `error`, `rtime`, `last_online`, `last_check`, `active`, `email`, `sms`, `pushover`) VALUES ('http://sourceforge.net/index.php', 80, 'SourceForge', 'website', '', 'on', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'yes', 'yes', 'yes', 'yes'), ('smtp.gmail.com', 465, 'Gmail SMTP', 'service', '', 'on', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'yes', 'yes', 'yes', 'yes')";
+		$queries[] = "INSERT INTO `" . PSM_DB_PREFIX . "servers` (`ip`, `port`, `label`, `type`, `pattern`, `hash`, `status`, `error`, `rtime`, `last_online`, `last_check`, `active`, `email`, `sms`, `pushover`) VALUES ('http://sourceforge.net/index.php', 80, 'SourceForge', 'website', '', '', 'on', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'yes', 'yes', 'yes', 'yes'), ('smtp.gmail.com', 465, 'Gmail SMTP', 'service', '', '', 'on', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'yes', 'yes', 'yes', 'yes')";
 		$queries[] = "INSERT INTO `" . PSM_DB_PREFIX . "users_servers` (`user_id`,`server_id`) VALUES (1, 1), (1, 2);";
 		$queries[] = "INSERT INTO `" . PSM_DB_PREFIX . "config` (`key`, `value`) VALUE
 					('language', 'en_US'),
@@ -442,7 +442,8 @@ class Installer {
 		psm_update_conf('password_encrypt_key', sha1(microtime()));
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` CHANGE `ip` `ip` VARCHAR(500) NOT NULL;";
 		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD `website_username` varchar(255) NULL, ADD `website_password` varchar(255) NULL AFTER `website_username`;";
-
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD `hash` VARCHAR(255) NOT NULL AFTER `pattern`;";
+		$queries[] = "ALTER TABLE `" . PSM_DB_PREFIX . "servers` ADD  `detectchange` ENUM( 'yes','no' ) NOT NULL DEFAULT 'no' AFTER  `hash`;";
 		$this->execSQL($queries);
 
     // Create log_users table

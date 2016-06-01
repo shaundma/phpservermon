@@ -82,7 +82,7 @@ class StatusUpdater {
 		$this->server = $this->db->selectRow(PSM_DB_PREFIX . 'servers', array(
 			'server_id' => $server_id,
 		), array(
-			'server_id', 'ip', 'port', 'label', 'type', 'pattern', 'status', 'active', 'warning_threshold',
+			'server_id', 'ip', 'port', 'label', 'type', 'pattern', 'hash', 'detectchange', 'status', 'active', 'warning_threshold',
 			'warning_threshold_counter', 'timeout', 'website_username', 'website_password'
 		));
 		if(empty($this->server)) {
@@ -125,6 +125,8 @@ class StatusUpdater {
 				$this->status_new = true;
 			} else {
 				$save['status'] = 'off';
+				// update the hash to the database
+				if($this->server['detectchange']) $save['hash'] = $this->server['hash'];
 			}
 		}
 
@@ -172,11 +174,13 @@ class StatusUpdater {
 		$starttime = microtime(true);
 
 		// We're only interested in the header, because that should tell us plenty!
-		// unless we have a pattern to search for!
+		// unless we have a pattern to search for or unless we want to detect change
+		if($this->server['pattern'] == '' && $this->server['detectchange'] == 'no') $getHtml=false;
+		else $getHtml=true;
 		$curl_result = psm_curl_get(
 			$this->server['ip'],
 			true,
-			($this->server['pattern'] == '' ? false : true),
+			$getHtml,
 			$this->server['timeout'],
 			true,
 			$this->server['website_username'],
@@ -216,6 +220,27 @@ class StatusUpdater {
 						$result = false;
 					}
 				}
+
+				// check for html changes, server['hash'] contains the previous hash value
+				if($this->server['detectchange'] != 'no') {
+					// strip off everything before <head>
+					$pos = strpos($curl_result, '<head>');
+					if($pos === false) {
+						// no html found, do nothing
+					} else {
+						$html = substr($curl_result, $pos);
+						$hash_new = sha1($html);
+						if($this->server['hash'] == $hash_new) {
+							// no change
+						} else {
+							// a change was detected
+							if ($run == $max_runs) $this->server['hash'] = $hash_new;
+							$this->error = 'TEXT ERROR : A change was detected in the HTML code.';
+							$result = false;
+						}
+					}
+				}
+
 			}
 		}
 
