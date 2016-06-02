@@ -162,6 +162,7 @@ class ServerController extends AbstractServerController {
 				// insert mode
 				$tpl_data['titlemode'] = psm_get_lang('system', 'insert');
 				$tpl_data['edit_value_warning_threshold'] = '1';
+				$tpl_data['edit_detectchange_selected_no'] = 'selected="selected"';
 
 				$edit_server = $_POST;
 				break;
