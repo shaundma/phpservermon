@@ -220,6 +220,8 @@ class Installer {
 						  `label` varchar(255) NOT NULL,
 						  `type` enum('service','website') NOT NULL default 'service',
 						  `pattern` varchar(255) NOT NULL,
+						  `hash` varchar(255) NOT NULL,
+						  `detectchange` enum('yes','no') NOT NULL default 'no',
 						  `status` enum('on','off') NOT NULL default 'on',
 						  `error` varchar(255) NULL,
 						  `rtime` FLOAT(9, 7) NULL,
